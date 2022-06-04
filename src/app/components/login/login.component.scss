@@ -1,0 +1,11 @@
+.login {
+    &__container {
+        height: calc(100vh - 64px);
+    }
+
+    &__form {
+        position: relative;
+        top: 50%;
+        transform: translate(0, -50%) !important;
+    }
+}

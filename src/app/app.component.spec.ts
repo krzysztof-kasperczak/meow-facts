@@ -1,35 +1,40 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { LoginService } from './services/login.service';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  });
+    let component: AppComponent;
+    let loginServiceSpy: jasmine.SpyObj<LoginService>;
+    let routerSpy: jasmine.SpyObj<Router>;
+    const loggedSubject = new Subject<boolean>();
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    beforeEach(() => {
+        loginServiceSpy = jasmine.createSpyObj('LoginService', [
+            'logout',
+        ]);
+        loginServiceSpy.logged$ = loggedSubject.asObservable();
 
-  it(`should have as title 'meow-facts'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('meow-facts');
-  });
+        routerSpy = jasmine.createSpyObj('Router', [
+            'navigate',
+        ]);
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('meow-facts app is running!');
-  });
+        component = new AppComponent(loginServiceSpy, routerSpy);
+    });
+
+    it('should be created', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should redirect on login', () => {
+        component.ngOnInit();
+        loggedSubject.next(true);
+        expect(component.showLogout).toBeTruthy();
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['/meow-facts']);
+    });
+
+    it('should logout', () => {
+        component.logout();
+        expect(loginServiceSpy.logout).toHaveBeenCalled();
+    });
 });

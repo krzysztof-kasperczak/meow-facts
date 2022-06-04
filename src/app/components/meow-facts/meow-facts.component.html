@@ -1,0 +1,6 @@
+<div
+    (scrolled)="onScroll()"
+    [infiniteScrollDistance]="2"
+    infinite-scroll>
+    <app-card *ngFor="let title of meowFacts" [title]="title"></app-card>
+</div>

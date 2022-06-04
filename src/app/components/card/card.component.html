@@ -1,0 +1,15 @@
+<div class="row mt-4">
+    <div class="col-10 offset-1 col-md-6 col-lg-4 offset-md-3 offset-lg-4">
+        <mat-card class="card">
+            <blockquote class="blockquote">
+                <p *ngIf="(title | async) as text; else loading" class="mb-3">{{ text  }}</p>
+                <footer class="blockquote-footer">meowfacts.herokuapp.com</footer>
+            </blockquote>
+        </mat-card>
+    </div>
+</div>
+
+<ng-template #loading>
+    Loading...
+</ng-template>
+
